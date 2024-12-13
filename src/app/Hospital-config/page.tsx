@@ -1,29 +1,67 @@
-import React from "react";
+'use client'
+import React,{useState} from "react";
 import Layout from "@/components/layout";
-
+import Admin from "@/components/Admin";
 import { Button } from "@/components/ui/button"; // shadcn button component
 
 const HospitalConfig = () => {
+  
+   const [formData, setFormData] = useState({
+    name: "",
+    address: "",
+    phone: "",
+    fax: "",
+    location: "",
+    email: "",
+    currency: "",
+    symbol: "",
+    prePrintedStationary: false,
+    selfConsultationReviewDay: "",
+    creditCardExpiryValidityDays: "",
+  });
+
+
+  // Handle input change
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, type} = e.target;
+    const checked = type === "checkbox" ? (e.target as HTMLInputElement).checked : undefined;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+   // Handle Save Button (POST)
+  const handleSave = async () => {
+    try {
+      const response = await fetch("https://j7a4yhqqxi.execute-api.ap-southeast-2.amazonaws.com/dev/hospitalinfo/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        alert("Hospital data saved successfully!");
+        // Clear the form or refresh data here if needed
+      } else {
+        const errorData = await response.json();
+        alert(`Error: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error("Error saving data:", error);
+      alert("Failed to save hospital data.");
+    }
+  };
+
   return (
      <Layout>
       <div className="min-h-screen bg-[#ceddff] p-6">
       {/* Header Section */}
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-xl font-bold text-[#004a87]">Hospital Config</h1>
-        <div className="flex items-center gap-5">
-          
-          <img
-            src="/profile.png" // Replace with your image path
-            alt=""
-            className="w-10 h-10 rounded-sm border-[.5px] border-[#004a87]"
-          />
-          <div className="flex flex-col">
-            <h2 className="text-lg font-bold text-[#004a87]">John Doe</h2>
-            <div className="text-sm text-[#004a87]">
-            <p className="font-bold">Admin Master</p>
-          </div>
-          </div>
-        </div>
+        <Admin />{/* This is the Admin component */}
       </div>
 
       {/* Horizontal Line */}
@@ -31,7 +69,7 @@ const HospitalConfig = () => {
 
       {/* Buttons Section */}
       <div className="flex justify-end mb-6 space-x-3 ">
-        <Button className="bg-[#004a87] text-[18px] text-white hover:bg-[#003970]">Save</Button>
+        <Button onClick={handleSave}className="bg-[#004a87] text-[18px] text-white hover:bg-[#003970]">Save</Button>
         <Button className="bg-white text-[18px] text-[#006dc2] border border-[#006dc2]">Clear</Button>
         <Button className="bg-[#d32929] text-[18px] text-white">Exit</Button>
       </div>
@@ -44,7 +82,9 @@ const HospitalConfig = () => {
         <div className="mb-4">
           <label className="block text-white mb-1">Name</label>
           <input
-            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
             className="w-full h-10 px-3 rounded-md border border-white bg-white"
           />
         </div>
@@ -53,7 +93,9 @@ const HospitalConfig = () => {
         <div className="mb-4">
           <label className="block text-white mb-1">Address</label>
           <input
-            type="text"
+            name="address"
+            value={formData.address}
+            onChange={handleChange}
             className="w-full h-10 px-3 rounded-md border border-white bg-white"
           />
         </div>
@@ -63,21 +105,27 @@ const HospitalConfig = () => {
           <div className="flex-1">
             <label className="block text-white mb-1">Phone</label>
             <input
-              type="text"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
               className="w-full h-10 px-3 rounded-md border border-white bg-white"
             />
           </div>
           <div className="flex-1">
             <label className="block text-white mb-1">Fax</label>
             <input
-              type="text"
+              name="fax"
+              value={formData.fax}
+              onChange={handleChange}
               className="w-full h-10 px-3 rounded-md border border-white bg-white"
             />
           </div>
           <div className="flex-1">
             <label className="block text-white mb-1">Location</label>
             <input
-              type="text"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
               className="w-full h-10 px-3 rounded-md border border-white bg-white"
             />
           </div>
@@ -87,7 +135,9 @@ const HospitalConfig = () => {
         <div className="mb-4">
           <label className="block text-white mb-1">Email</label>
           <input
-            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
             className="w-full h-10 px-3 rounded-md border border-white bg-white"
           />
         </div>
@@ -97,6 +147,9 @@ const HospitalConfig = () => {
           <div className="flex-1">
             <label className="block text-white mb-1">Currency</label>
             <select
+              name="currency"
+              value={formData.currency}
+              onChange={handleChange}
               className="w-full h-10 px-3 rounded-md border border-white bg-white"
             >
               <option value="usd">USD</option>
@@ -107,7 +160,9 @@ const HospitalConfig = () => {
           <div className="flex-1">
             <label className="block text-white mb-1">Symbol</label>
             <input
-              type="text"
+              name="symbol"
+              value={formData.symbol}
+              onChange={handleChange}
               className="w-full h-10 px-3 rounded-md border border-white bg-white"
             />
           </div>
@@ -115,7 +170,10 @@ const HospitalConfig = () => {
 
         {/* Pre-printed Stationary */}
         <div className="flex items-center space-x-2">
-          <input type="checkbox" className="h-5 w-5" />
+          <input type="checkbox"
+            name="prePrintedStationary"
+            checked={formData.prePrintedStationary}
+            onChange={handleChange} className="h-5 w-5" />
           <label className="text-white">Pre-printed Stationary</label>
         </div>
       </div>
@@ -124,16 +182,23 @@ const HospitalConfig = () => {
       <div className="mt-6 p-6 bg-[#8cb7ff] rounded-lg flex justify-start gap-8">
         <div className="mb-4 flex gap-2">
           <label className="block text-white mb-1">Self Consultation Review Day</label>
-          <textarea
+          <input
+             name="selfConsultationReviewDay"
+             value={formData.selfConsultationReviewDay}
+             onChange={handleChange}
             className=" h-6  w-16 px-3 rounded-md border border-white bg-white"
-          ></textarea>
+          ></input>
         </div>
 
         <div className="mb-4 flex gap-2">
           <label className="block text-white mb-1">Credit Card Expiry Validity Days</label>
-          <textarea
+          <input
+              
+              name="creditCardExpiryValidityDays"
+              value={formData.creditCardExpiryValidityDays}
+              onChange={handleChange}
             className="h-6 w-16 px-3 rounded-md border border-white bg-white"
-          ></textarea>
+          ></input>
         </div>
       </div>
     </div>

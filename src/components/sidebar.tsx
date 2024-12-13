@@ -10,7 +10,7 @@ const Sidebar = () => {
 
   const menuItems = [
     { name: "Hospital Configuration", icon: FiSettings, path: "/Hospital-config" },
-    { name: "Service Group", icon: FiFileText, path: "/service-group" },
+    { name: "Service Group", icon: FiFileText, path: "/Service-group" },
     { name: "Master Setup", icon: FiHome, path: "/master-setup" },
     { name: "GST Setup", icon: FiUser, path: "/gst-setup" },
     { name: "Insurance Company", icon: FiSettings, path: "/insurance-company" },
@@ -51,7 +51,7 @@ const Sidebar = () => {
               
               <span
                 className={cn(
-                  "ml-3 text-[#8cb7ff] text-sm font-medium transition-all duration-300",
+                  "ml-3 text-[#8cb7ff] text-md font-medium transition-all duration-300",
                   isHovered ? "opacity-100" : "opacity-0"
                 )}
               >
